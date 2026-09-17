@@ -9,6 +9,9 @@
   --sq-dark: #779556;
   --last-move: rgba(255, 236, 120, 0.55);
   --check: rgba(220, 70, 60, 0.75);
+  --selected: rgba(255, 236, 120, 0.85);
+  --border: #4a463f;
+  --danger: #b5533f;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   color-scheme: dark;
 }

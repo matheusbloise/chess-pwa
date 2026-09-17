@@ -178,3 +178,465 @@
   color: var(--text-muted);
   font-size: 0.85rem;
 }
+
+/* ------------------------------------------------------------------ *
+ * Tabuleiro: linhas, seleção e coordenadas
+ * ------------------------------------------------------------------ */
+
+/* As linhas existem para leitores de tela (role="row"), mas não devem criar
+   uma caixa: display:contents deixa as 64 casas na grade 8x8 do .board. */
+.board__row {
+  display: contents;
+}
+
+.board-wrap {
+  position: relative;
+  display: flex;
+}
+
+.square:focus-visible {
+  outline: 3px solid var(--accent-hover);
+  outline-offset: -3px;
+  z-index: 3;
+}
+
+.square--selected::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--selected);
+  pointer-events: none;
+}
+
+.square__rank,
+.square__file {
+  position: absolute;
+  font-size: clamp(8px, 2.2vw, 11px);
+  font-weight: 700;
+  opacity: 0.65;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.square__rank {
+  top: 2px;
+  left: 3px;
+}
+
+.square__file {
+  bottom: 1px;
+  right: 3px;
+}
+
+.square--light .square__rank,
+.square--light .square__file {
+  color: var(--sq-dark);
+}
+
+.square--dark .square__rank,
+.square--dark .square__file {
+  color: var(--sq-light);
+}
+
+/* ------------------------------------------------------------------ *
+ * Faixas dos jogadores: nome, capturas e relógio
+ * ------------------------------------------------------------------ */
+
+.player {
+  width: min(92vw, 520px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--bg-elevated);
+  border: 1px solid transparent;
+  min-height: 44px;
+}
+
+.player--turn {
+  border-color: var(--accent);
+}
+
+.player__identity,
+.player__right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.player__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex: none;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.player__dot--white {
+  background: #f5f5f0;
+}
+
+.player__dot--black {
+  background: #1e1c1a;
+}
+
+.player__name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.player__thinking {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.captured {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.captured__pieces {
+  font-size: 1rem;
+  line-height: 1;
+  letter-spacing: -3px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.captured__pieces--white {
+  color: #e8e6e0;
+}
+
+.captured__pieces--black {
+  color: #15130f;
+}
+
+.captured__score {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.clock {
+  font-variant-numeric: tabular-nums;
+  font-size: 1.05rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--text-muted);
+}
+
+.clock--active {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.clock--low {
+  background: var(--danger);
+  color: #fff;
+}
+
+/* ------------------------------------------------------------------ *
+ * Barra de ações
+ * ------------------------------------------------------------------ */
+
+.toolbar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn--ghost {
+  background: var(--bg-elevated);
+  color: var(--text);
+}
+
+.btn--ghost:hover:not(:disabled) {
+  background: #46423d;
+}
+
+.btn--icon {
+  background: var(--bg-elevated);
+  color: var(--text);
+  padding: 10px 12px;
+  line-height: 1;
+}
+
+.btn--icon:hover:not(:disabled) {
+  background: #46423d;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ------------------------------------------------------------------ *
+ * Painéis: ajustes e histórico
+ * ------------------------------------------------------------------ */
+
+.panel {
+  width: 100%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.panel__title {
+  margin: 0;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+}
+
+.panel__empty {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field__label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+}
+
+.field__hint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  border-radius: 999px;
+  padding: 7px 13px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.chip:hover {
+  border-color: var(--accent);
+}
+
+.chip.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.history {
+  max-height: 168px;
+  overflow-y: auto;
+}
+
+.history__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.history__row {
+  display: grid;
+  grid-template-columns: 2.4rem 1fr 1fr;
+  gap: 6px;
+  padding: 3px 0;
+  font-size: 0.9rem;
+}
+
+.history__row:nth-child(odd) {
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.history__number {
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.history__move {
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------ *
+ * Modal de promoção
+ * ------------------------------------------------------------------ */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 50;
+}
+
+.modal__panel {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  width: min(100%, 340px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+.modal__title {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.modal__text {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.promotion__options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.promotion__option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 4px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--sq-dark);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.promotion__option:hover,
+.promotion__option:focus-visible {
+  background: var(--accent);
+  border-color: var(--accent-hover);
+}
+
+.promotion__option .piece {
+  font-size: clamp(26px, 8vw, 38px);
+}
+
+.promotion__label {
+  font-size: 0.7rem;
+  color: var(--text);
+  text-transform: capitalize;
+}
+
+/* ------------------------------------------------------------------ *
+ * Fim de partida
+ * ------------------------------------------------------------------ */
+
+.gameover {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(20, 18, 16, 0.7);
+  border-radius: 8px;
+  padding: 16px;
+  z-index: 10;
+}
+
+.gameover__card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 300px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+.gameover__title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.gameover__reason {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--text-muted);
+}
+
+.gameover__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.gameover__dismiss {
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------------------ *
+ * Telas largas: histórico ao lado do tabuleiro
+ * ------------------------------------------------------------------ */
+
+@media (min-width: 900px) {
+  .app {
+    max-width: 640px;
+  }
+
+  .board,
+  .player {
+    width: 560px;
+  }
+
+  .history {
+    max-height: 260px;
+  }
+}

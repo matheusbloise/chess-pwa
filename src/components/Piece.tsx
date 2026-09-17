@@ -1,16 +1,6 @@
 import { useDraggable } from '@dnd-kit/core'
 import type { Color, PieceSymbol, Square } from 'chess.js'
-
-/** Símbolos Unicode das peças. Usamos sempre os glifos "brancos" e damos
- *  cor via CSS (fill/contorno) para nitidez consistente em ambos os lados. */
-const PIECE_GLYPH: Record<PieceSymbol, string> = {
-  k: '\u2654', // ♔ rei
-  q: '\u2655', // ♕ dama
-  r: '\u2656', // ♖ torre
-  b: '\u2657', // ♗ bispo
-  n: '\u2658', // ♘ cavalo
-  p: '\u2659', // ♙ peão
-}
+import { PIECE_GLYPH } from '../game/pieces'
 
 interface PieceProps {
   square: Square
@@ -38,7 +28,10 @@ export function Piece({ square, type, color, draggable }: PieceProps) {
       }}
       {...listeners}
       {...attributes}
-      aria-label={`Peça ${type} ${color === 'w' ? 'branca' : 'preta'} em ${square}`}
+      // A casa já anuncia peça e posição para leitores de tela; aqui o glifo
+      // é puramente decorativo, então evitamos a leitura duplicada.
+      aria-hidden="true"
+      tabIndex={-1}
     >
       {PIECE_GLYPH[type]}
     </span>
